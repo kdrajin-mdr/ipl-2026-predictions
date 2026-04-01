@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL 2026 Predictions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        /* Team buttons */
+        .team-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .team-btn {
+            padding: 16px 10px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .team-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .team-btn.active {
+            border-color: #ffd200;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255,210,0,0.25);
+        }
+
+        /* Team colours */
+        .btn-MI   { background: #004ba0; color: #fff; }
+        .btn-DC   { background: #004c93; color: #ef1b23; }
+        .btn-SRH  { background: #f26522; color: #fff; }
+        .btn-RCB  { background: #d4213d; color: #000; }
+        .btn-KKR  { background: #3a225d; color: #f2c230; }
+        .btn-PBKS { background: #d71920; color: #fff; }
+        .btn-CSK  { background: #f9cd05; color: #0081e9; }
+        .btn-RR   { background: #ea1a85; color: #254aa5; }
+
+        /* Result card */
+        .result-card {
+            display: none;
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 32px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .result-card.show { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .result-team-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .prediction-boxes {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .pred-box {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .pred-label {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .pred-value {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .pred-value.pts  { color: #ffd200; }
+        .pred-value.pos  { color: #00e676; }
+
+        /* History table */
+        .history-title {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px 14px;
+            text-align: center;
+        }
+
+        th {
+            background: rgba(255,255,255,0.1);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ccc;
+        }
+
+        th:first-child, td:first-child { text-align: left; }
+
+        td { border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+        tr:last-child td { border-bottom: none; }
+
+        .total-row td {
+            font-weight: 800;
+            color: #ffd200;
+            border-top: 2px solid rgba(255,210,0,0.3);
+        }
+
+        /* Overall standings */
+        .standings {
+            margin-top: 40px;
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .standings h2 {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            color: #ffd200;
+            letter-spacing: 1px;
+        }
+
+        .standings table tr:hover { background: rgba(255,255,255,0.04); }
+
+        .pos-1 { color: #ffd700; font-weight: 700; }
+        .pos-2 { color: #c0c0c0; font-weight: 700; }
+        .pos-3 { color: #cd7f32; font-weight: 700; }
+
+        .note {
+            text-align: center;
+            color: #777;
+            font-size: 0.78rem;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 600px) {
+            .team-buttons { grid-template-columns: repeat(2, 1fr); }
+            .prediction-boxes { flex-direction: column; }
+            h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>IPL 2026 Predictions</h1>
+    <div style="margin-bottom: 32px;"></div>
+
+    <div class="team-buttons" id="teamButtons">
+        <button class="team-btn btn-MI"   data-team="MI">MI</button>
+        <button class="team-btn btn-DC"   data-team="DC">DC</button>
+        <button class="team-btn btn-SRH"  data-team="SRH">SRH</button>
+        <button class="team-btn btn-RCB"  data-team="RCB">RCB</button>
+        <button class="team-btn btn-KKR"  data-team="KKR">KKR</button>
+        <button class="team-btn btn-PBKS" data-team="PBKS">PBKS</button>
+        <button class="team-btn btn-CSK"  data-team="CSK">CSK</button>
+        <button class="team-btn btn-RR"   data-team="RR">RR</button>
+    </div>
+
+    <div class="result-card" id="resultCard">
+        <div class="result-header">
+            <span class="result-team-name" id="resultTeamName"></span>
+        </div>
+
+        <div class="prediction-boxes">
+            <div class="pred-box">
+                <div class="pred-label">Predicted PTS (2026)</div>
+                <div class="pred-value pts" id="predPts"></div>
+            </div>
+            <div class="pred-box">
+                <div class="pred-label">Predicted POS (2026)</div>
+                <div class="pred-value pos" id="predPos"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall predicted standings -->
+    <div class="standings">
+        <h2>Predicted 2026 Standings</h2>
+        <table>
+            <thead>
+                <tr><th>POS</th><th>Team</th><th>Avg PTS</th></tr>
+            </thead>
+            <tbody id="standingsBody"></tbody>
+        </table>
+    </div>
+
+    <p class="note">
+        Note: DD (Delhi Daredevils) is mapped to DC (Delhi Capitals) &bull;
+        DEC (Deccan Chargers) is mapped to SRH (Sunrisers Hyderabad).<br>
+        PTS = Wins &times; 2 + No Results &times; 1. Predicted PTS is the average across all 5 seasons. POS is ranked by average PTS.
+    </p>
+</div>
+
+<script>
+    /*  ===== DATA FROM IPL PDFs =====
+        PTS = W*2 + NR*1  (standard IPL scoring)
+        DD  -> DC   (Delhi Daredevils became Delhi Capitals)
+        DEC -> SRH  (Deccan Chargers replaced by Sunrisers Hyderabad)
+    */
+
+    const teamFullNames = {
+        MI:   "Mumbai Indians",
+        DC:   "Delhi Capitals",
+        SRH:  "Sunrisers Hyderabad",
+        RCB:  "Royal Challengers Bengaluru",
+        KKR:  "Kolkata Knight Riders",
+        PBKS: "Punjab Kings",
+        CSK:  "Chennai Super Kings",
+        RR:   "Rajasthan Royals"
+    };
+
+    // { year, alias (name in that year's table), pos, w, nr, pts }
+    const history = {
+        MI: [
+            { year: 2008, alias: "MI",  pos: 5, w: 7,  nr: 0, pts: 14 },
+            { year: 2009, alias: "MI",  pos: 7, w: 5,  nr: 1, pts: 11 },
+            { year: 2015, alias: "MI",  pos: 2, w: 8,  nr: 0, pts: 16 },
+            { year: 2020, alias: "MI",  pos: 1, w: 9,  nr: 0, pts: 18 },
+            { year: 2025, alias: "MI",  pos: 4, w: 8,  nr: 0, pts: 16 }
+        ],
+        DC: [
+            { year: 2008, alias: "DD",  pos: 4, w: 7,  nr: 1, pts: 15 },
+            { year: 2009, alias: "DD",  pos: 1, w: 10, nr: 0, pts: 20 },
+            { year: 2015, alias: "DD",  pos: 7, w: 5,  nr: 1, pts: 11 },
+            { year: 2020, alias: "DC",  pos: 2, w: 8,  nr: 0, pts: 16 },
+            { year: 2025, alias: "DC",  pos: 5, w: 7,  nr: 1, pts: 15 }
+        ],
+        SRH: [
+            { year: 2008, alias: "DEC", pos: 8, w: 2,  nr: 0, pts: 4  },
+            { year: 2009, alias: "DEC", pos: 4, w: 7,  nr: 0, pts: 14 },
+            { year: 2015, alias: "SRH", pos: 6, w: 7,  nr: 0, pts: 14 },
+            { year: 2020, alias: "SRH", pos: 3, w: 7,  nr: 0, pts: 14 },
+            { year: 2025, alias: "SRH", pos: 6, w: 6,  nr: 1, pts: 13 }
+        ],
+        RCB: [
+            { year: 2008, alias: "RCB", pos: 7, w: 4,  nr: 0, pts: 8  },
+            { year: 2009, alias: "RCB", pos: 3, w: 8,  nr: 0, pts: 16 },
+            { year: 2015, alias: "RCB", pos: 3, w: 7,  nr: 2, pts: 16 },
+            { year: 2020, alias: "RCB", pos: 4, w: 7,  nr: 0, pts: 14 },
+            { year: 2025, alias: "RCB", pos: 2, w: 9,  nr: 1, pts: 19 }
+        ],
+        KKR: [
+            { year: 2008, alias: "KKR", pos: 6, w: 6,  nr: 1, pts: 13 },
+            { year: 2009, alias: "KKR", pos: 8, w: 3,  nr: 1, pts: 7  },
+            { year: 2015, alias: "KKR", pos: 5, w: 7,  nr: 1, pts: 15 },
+            { year: 2020, alias: "KKR", pos: 5, w: 7,  nr: 0, pts: 14 },
+            { year: 2025, alias: "KKR", pos: 8, w: 5,  nr: 2, pts: 12 }
+        ],
+        PBKS: [
+            { year: 2008, alias: "PBKS", pos: 2, w: 10, nr: 0, pts: 20 },
+            { year: 2009, alias: "PBKS", pos: 5, w: 7,  nr: 0, pts: 14 },
+            { year: 2015, alias: "PBKS", pos: 8, w: 3,  nr: 0, pts: 6  },
+            { year: 2020, alias: "PBKS", pos: 6, w: 6,  nr: 0, pts: 12 },
+            { year: 2025, alias: "PBKS", pos: 1, w: 9,  nr: 1, pts: 19 }
+        ],
+        CSK: [
+            { year: 2008, alias: "CSK", pos: 3, w: 8,  nr: 0, pts: 16 },
+            { year: 2009, alias: "CSK", pos: 2, w: 8,  nr: 1, pts: 17 },
+            { year: 2015, alias: "CSK", pos: 1, w: 9,  nr: 0, pts: 18 },
+            { year: 2020, alias: "CSK", pos: 7, w: 6,  nr: 0, pts: 12 },
+            { year: 2025, alias: "CSK", pos: 10, w: 4, nr: 0, pts: 8  }
+        ],
+        RR: [
+            { year: 2008, alias: "RR",  pos: 1, w: 11, nr: 0, pts: 22 },
+            { year: 2009, alias: "RR",  pos: 6, w: 6,  nr: 1, pts: 13 },
+            { year: 2015, alias: "RR",  pos: 4, w: 7,  nr: 2, pts: 16 },
+            { year: 2020, alias: "RR",  pos: 8, w: 6,  nr: 0, pts: 12 },
+            { year: 2025, alias: "RR",  pos: 9, w: 4,  nr: 0, pts: 8  }
+        ]
+    };
+
+    // Calculate averages and ranking
+    const teams = Object.keys(history);
+    const averages = {};
+    teams.forEach(t => {
+        const total = history[t].reduce((sum, row) => sum + row.pts, 0);
+        averages[t] = +(total / history[t].length).toFixed(1);
+    });
+
+    // Sort teams by average pts descending to assign positions
+    const sorted = [...teams].sort((a, b) => averages[b] - averages[a]);
+    const positions = {};
+    let rank = 1;
+    for (let i = 0; i < sorted.length; i++) {
+        if (i > 0 && averages[sorted[i]] < averages[sorted[i - 1]]) {
+            rank = i + 1;
+        }
+        positions[sorted[i]] = rank;
+    }
+
+    // Render overall standings table
+    const standingsBody = document.getElementById("standingsBody");
+    sorted.forEach(t => {
+        const posClass = positions[t] <= 3 ? ` class="pos-${positions[t]}"` : "";
+        standingsBody.innerHTML += `<tr>
+            <td${posClass}>${positions[t]}</td>
+            <td>${t} - ${teamFullNames[t]}</td>
+            <td${posClass}>${averages[t]}</td>
+        </tr>`;
+    });
+
+    // Button click handler
+    const resultCard = document.getElementById("resultCard");
+    const resultTeamName = document.getElementById("resultTeamName");
+    const predPts = document.getElementById("predPts");
+    const predPos = document.getElementById("predPos");
+
+    document.querySelectorAll(".team-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".team-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const team = btn.dataset.team;
+            resultTeamName.textContent = `${team} - ${teamFullNames[team]}`;
+            predPts.textContent = averages[team];
+            predPos.textContent = "#" + positions[team];
+
+            resultCard.classList.add("show");
+            resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    });
+</script>
+</body>
+</html>
